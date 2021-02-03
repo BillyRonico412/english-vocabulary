@@ -15,34 +15,57 @@ app.use('/public', express.static('views/public'))
 app.use(require('express-session')({
     secret: config.secretSession,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        sameSite: true
+    }
 }))
+
+// Fermeture de la session 
 
 // Routage API
 const ApiRouter = express.Router()
 app.use(config.routeAPI, ApiRouter)
 
+const Vocabulaire = require('./classes/Vocabulaire')
+
+ApiRouter.use((req, res, next) => {
+    if (req.session && req.session.connexion === true)
+        next()
+    else res.status(401).end('My API is so secured')
+})
+
+ApiRouter.route('/')
+    .get((req, res) => res.json(Vocabulaire.getWord()))
+    .post((req, res) => res.json(Vocabulaire.addWord(req.body.enWord, req.body.frWord)))
+
+ApiRouter.route('/:id')
+    .get((req, res) => res.json(Vocabulaire.getWord(req.params.id)))
+    .post((req, res) => res.json(Vocabulaire.addWord(req.body.enWord, req.body.frWord)))
+    .delete((req, res) => res.json(Vocabulaire.deleteWord(req.params.id)))
+
+// Routage statique
+
 app.post('/', (req, res) => {
-    console.log(req.body.motDePasse)
     if (req.body.motDePasse && req.body.motDePasse === config.motDePasse) {
         req.session.connexion = true
         res.sendFile(__dirname + '/views/index.html')
     } else res.redirect('/')
 })
 
-// Routage statique
 app.get('/', (req, res) => {
 
     // Gestion de la deconnexion
-    if (req.query.deconnexion === 'true') 
-        req.session.connexion = false
+    if (req.query.deconnexion === 'true')
+        req.session.destroy(() => Vocabulaire.sauvegarde())
 
     // Si connecter afficher la page principale
-    if (req.session.connexion)
+    if (req.session && req.session.connexion === true)
         res.sendFile(__dirname + '/views/index.html')
 
     // Sinon afficher la page de connexion
     else res.sendFile(__dirname + '/views/connexion.html')
+
 })
 
 app.listen(config.port, () => {

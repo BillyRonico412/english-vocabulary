@@ -58,6 +58,29 @@ h1 {
     background-color: hsl(90, 8%, 75%);
 }
 
-#title-modal-add-word{
+#title-modal-add-word {
     color: hsl(0, 0%, 30%);
+}
+
+.list-word-2 {
+    background-color: hsl(0, 0%, 95%);
+}
+
+.v-enter, .v-leave-to {
+    opacity: 0;
+    transition: 0.5s all;
+}
+
+.v-enter-active, .v-leave-active {
+    transition: 0.5s all;
+}
+
+#word-list-to-main-menu {
+    background-color: hsl(352, 41%, 39%);
+    transition: 0.4s all;
+    cursor: pointer;
+}
+
+#word-list-to-main-menu:hover {
+    background-color: hsl(352, 41%, 34%);
 }

@@ -1,0 +1,63 @@
+body {
+    background-color: hsl(179, 90%, 33%);
+    font-family: 'Fredoka One', cursive;
+    color: white;
+}
+
+h1 {
+    font-size: 50px;
+}
+
+.item-menu-principal {
+    background-color: #d9dcd6;
+    font-size: 30px;
+    color: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: 0.4s all;
+    border-radius: 10px;
+}
+
+.item-menu-principal:nth-child(1) {
+    background-color: hsl(32, 92%, 81%);
+}
+
+.item-menu-principal:nth-child(2) {
+    background-color: hsl(22, 91%, 65%);
+}
+
+.item-menu-principal:nth-child(3) {
+    background-color: hsl(352, 41%, 39%);
+    color: hsl(0, 0%, 95%);
+}
+
+.item-menu-principal:nth-child(4) {
+    background-color: hsl(213, 65%, 10%);
+    color: hsl(0, 0%, 95%);
+}
+
+.item-menu-principal:nth-child(1):hover {
+    background-color: hsl(32, 92%, 76%);
+}
+
+.item-menu-principal:nth-child(2):hover {
+    background-color: hsl(22, 91%, 60%);
+}
+
+.item-menu-principal:nth-child(3):hover {
+    background-color: hsl(352, 41%, 34%);
+    color: hsl(0, 0%, 95%);
+}
+
+.item-menu-principal:nth-child(4):hover {
+    background-color: hsl(213, 65%, 5%);
+    color: hsl(0, 0%, 95%);
+}
+
+.item-menu-principal:hover {
+    font-size: 32px;
+    background-color: hsl(90, 8%, 75%);
+}
+
+#title-modal-add-word{
+    color: hsl(0, 0%, 30%);
+}

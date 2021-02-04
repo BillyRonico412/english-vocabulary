@@ -67,11 +67,12 @@ h1 {
 }
 
 .v-enter, .v-leave-to {
+    transform: rotateY(180deg);
     opacity: 0;
 }
 
 .v-enter-active, .v-leave-active {
-    transition: 0.5s all;
+    transition: 0.1s all;
 }
 
 #word-list-to-main-menu {

@@ -71,7 +71,7 @@
                         </div>
                     </transition>
 
-                    <div id="button-know" class="text-center fs-2 button-revision my-2 py-2 rounded"
+                    <div id="button-know" class="text-center fs-2 button-revision my-2 py-2 rounded" v-if="wordListNotKnow.length > 0"
                         @click="knowRevision">Know
                     </div>
 

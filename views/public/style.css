@@ -68,7 +68,6 @@ h1 {
 
 .v-enter, .v-leave-to {
     opacity: 0;
-    transition: 0.5s all;
 }
 
 .v-enter-active, .v-leave-active {
@@ -83,4 +82,32 @@ h1 {
 
 #word-list-to-main-menu:hover {
     background-color: hsl(352, 41%, 34%);
+}
+
+.button-revision {
+    cursor: pointer;
+}
+
+#button-show {
+    background-color: hsl(22, 91%, 65%);
+}
+
+#button-next {
+    background-color: hsl(352, 41%, 39%);;
+}
+
+#button-quit {
+    background-color: hsl(0, 0%, 13%);
+}
+
+#button-know {
+    background-color: hsl(213, 65%, 33%);
+}
+
+.word-know {
+    background-color: hsl(22, 91%, 65%);
+}
+
+.word-list-item {
+    cursor: pointer;
 }

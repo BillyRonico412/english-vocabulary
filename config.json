@@ -1,6 +1,0 @@
-{
-    "port": 8082,
-    "routeAPI": "/api/vocabulaire",
-    "motDePasse": "vocabulaire",
-    "secretSession": "vocabulary_key"
-}

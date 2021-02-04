@@ -1,5 +1,5 @@
 const express = require('express')
-const config = require('./config.json')
+const config = require('./assets/config.json')
 const bodyParser = require('body-parser')
 
 const app = express()
@@ -42,6 +42,7 @@ ApiRouter.route('/')
 ApiRouter.route('/:id')
     .get((req, res) => res.json(Vocabulaire.getWord(req.params.id)))
     .post((req, res) => res.json(Vocabulaire.addWord(req.body.enWord, req.body.frWord)))
+    .put((req, res) => res.json(Vocabulaire.updateWord(req.params.id, parseInt(req.query.know))))
     .delete((req, res) => res.json(Vocabulaire.deleteWord(req.params.id)))
 
 // Routage statique

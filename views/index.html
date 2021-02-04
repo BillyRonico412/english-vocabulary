@@ -33,8 +33,8 @@
                 <ul class="list-group w-100">
                     <li class="list-unstyled item-menu-principal text-center my-2 py-2" type="button"
                         data-bs-toggle="modal" data-bs-target="#modal-add-word">Add a new word</li>
-                    <li class="list-unstyled item-menu-principal text-center my-2 py-2">Revision</li>
-                    <li class="list-unstyled item-menu-principal text-center my-2 py-2" @click="onglet = 1">Word list
+                    <li class="list-unstyled item-menu-principal text-center my-2 py-2" @click="revision">Revision</li>
+                    <li class="list-unstyled item-menu-principal text-center my-2 py-2" @click="onglet = 2">Word list
                     </li>
                     <li class="list-unstyled item-menu-principal text-center my-2 py-2">
                         <a href="/?deconnexion=true" style="color: inherit; text-decoration: none; display: block;">
@@ -45,10 +45,48 @@
                 </ul>
             </section>
 
-            <section id="word-list" v-else>
+            <section id="revision" v-if="onglet === 1">
 
-                <div id="word-list-to-main-menu"
-                    class="center rounded text-center fs-3 py-3 my-2" @click="onglet = 0">
+                <div>
+                    <h1 class="text-center my-3 w-100">Revision</h1>
+
+                    <div class="alert alert-danger text-center" v-if="boolAlertUnknowWord">
+                        <small class="fw-bold">no unknown word</small>
+                    </div>
+
+                    <h2 class="text-center my-3 fs-2">{{ motRevision }}</h2>
+
+                    <transition mode="out-in">
+                        <div class="text-center my-3 fs-1" v-if="boolMotTranslate">{{ motTranslate }}</div>
+                        <div class="text-center my-3 fs-1" v-else>...</div>
+                    </transition>
+
+                    <transition>
+                        <div id="button-show" class="text-center fs-2 button-revision my-2 py-2 rounded"
+                            v-if="!boolMotTranslate" @click="show">Show
+                        </div>
+
+                        <div id="button-next" class="text-center fs-2 button-revision my-2 py-2 rounded" v-else @click="play">
+                            Next
+                        </div>
+                    </transition>
+
+                    <div id="button-know" class="text-center fs-2 button-revision my-2 py-2 rounded"
+                        @click="knowRevision">Know
+                    </div>
+
+                    <div id="button-quit" class="text-center fs-2 button-revision my-2 py-2 rounded"
+                        @click="onglet = 0">Quit
+                    </div>
+                </div>
+
+
+
+            </section>
+
+            <section id="word-list" v-if="onglet === 2">
+
+                <div id="word-list-to-main-menu" class="rounded text-center fs-3 py-3 my-2" @click="onglet = 0">
                     Return to main menu
                 </div>
 
@@ -58,8 +96,8 @@
                         <div class="w-100 text-center">French</div>
                     </li>
 
-                    <li class="list-group-item d-flex fs-5 py-3" v-for="(word, key) in wordList"
-                        :class="{'list-word-2': key % 2 === 1}">
+                    <li class="list-group-item d-flex fs-5 py-3 word-list-item" v-for="(word, key) in wordList"
+                        :class="{'list-word-2': key % 2 === 1, 'word-know': word.know}" @click="knowWord(key)">
                         <div class="w-100 text-center"> {{ word.en }} </div>
                         <div class="w-100 text-center"> {{ word.fr }} </div>
                     </li>

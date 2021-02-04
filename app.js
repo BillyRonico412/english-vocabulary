@@ -28,6 +28,7 @@ const ApiRouter = express.Router()
 app.use(config.routeAPI, ApiRouter)
 
 const Vocabulaire = require('./classes/Vocabulaire')
+const { dirname } = require('path')
 
 ApiRouter.use((req, res, next) => {
     if (req.session && req.session.connexion === true)
@@ -67,6 +68,10 @@ app.get('/', (req, res) => {
     // Sinon afficher la page de connexion
     else res.sendFile(__dirname + '/views/connexion.html')
 
+})
+
+app.get('/favicon.ico', (req, res) => {
+    res.sendFile(__dirname + '/favicon.ico')
 })
 
 app.listen(config.port, () => {

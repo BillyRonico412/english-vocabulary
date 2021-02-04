@@ -16,7 +16,7 @@ const sendRest = result => {
 class Vocabulaire {
 
     static addWord(enWord, frWord) {
-        if (/^[a-zA-Z]+$/.test(enWord) && /^[a-zA-Z]+$/.test(frWord)) {
+        if (/^[a-zA-Z àéèç'êâûîïëä]+$/.test(enWord) && /^[a-zA-Z àéèç'êâûîïëä]+$/.test(frWord)) {
             vocabulaireJson.push({
                 en: enWord.toCapitalise(),
                 fr: frWord.toCapitalise(),

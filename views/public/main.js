@@ -14,7 +14,8 @@ const vm = new Vue({
         keyRevision: -1,
         boolMotTranslate: false,
         wordListNotKnow: [],
-        boolAlertUnknowWord: false
+        boolAlertUnknowWord: false,
+        search: ''
     },
     computed: {
 
@@ -83,6 +84,9 @@ const vm = new Vue({
                 if (!word.know) result.push({ word, key })
             })
             this.wordListNotKnow = result
+        },
+        testSearch(word) {
+            return new RegExp(this.search, 'i').test(word)
         }
     },
     created() {

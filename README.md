@@ -8,6 +8,8 @@ Une application qui va faciliter de mémoriser les vocabulaires en Anglais
 
 * Clonner tout d'abord le depot
 
+* Ajouter un fichier vocabulaire.json initialisé a un objet vide {   }
+
 * Ajouter un fichier __config.json__ dans le dossier __assets__, et mettre dans celle-ci les champs suivants
 
     * port: Pour qui sera utilisé par l'application

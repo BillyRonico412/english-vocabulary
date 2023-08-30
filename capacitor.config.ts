@@ -1,12 +1,13 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from "@capacitor/cli"
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'english-vocabulary',
-  webDir: 'dist',
-  server: {
-    androidScheme: 'https'
-  }
-};
+	appId: "fr.ronicobilly.englishvocabulary",
+	appName: "english-vocabulary",
+	webDir: "dist",
+	server: {
+		androidScheme: "https",
+	},
+	plugins: {},
+}
 
-export default config;
+export default config

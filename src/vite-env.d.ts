@@ -9,4 +9,5 @@ interface ImportMetaEnv {
 	VITE_MESSAGING_SENDER_ID: string
 	VITE_APP_ID: string
 	VITE_MEASUREMENT_ID: string
+	VITE_DATABASE_URL: string
 }

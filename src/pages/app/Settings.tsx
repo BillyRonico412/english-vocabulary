@@ -1,13 +1,20 @@
-import { IonButton, IonContent, IonPage } from "@ionic/react"
+import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react"
 import { getAuth, signOut } from "firebase/auth"
+import { gameController, volumeMedium } from "ionicons/icons"
 import { useAtom, useSetAtom } from "jotai"
 import { tryit } from "radash"
 import { useCallback } from "react"
-import { autoSoundEnabledAtom, toastAtom } from "../../utils"
+import {
+	autoSoundEnabledAtom,
+	getFlagEmoteByLanguage,
+	playTypeAtom,
+	toastAtom,
+} from "../../utils"
 
 const Settings = () => {
 	const setToast = useSetAtom(toastAtom)
 	const [autoSoundEnabled, setAutoSoundEnabled] = useAtom(autoSoundEnabledAtom)
+	const [playType, setPlayType] = useAtom(playTypeAtom)
 	const onClickDisconnect = useCallback(async () => {
 		const auth = getAuth()
 		const [errSignOut] = await tryit(signOut)(auth)
@@ -28,8 +35,41 @@ const Settings = () => {
 			<IonContent fullscreen>
 				<div className="w-full h-full px-4 py-8 flex flex-col gap-y-8 justify-center">
 					<div className="flex flex-col gap-y-2">
-						<p className="text-center text-lg">Lecture automatique</p>
-						<div className="grid grid-rows-2 grid-cols-2 gap-x-2">
+						<p className="flex justify-center text-lg items-center gap-x-2">
+							Type de jeu <IonIcon icon={gameController} />
+						</p>
+						<div className="grid grid-cols-3 gap-x-2">
+							<IonButton
+								onClick={() => {
+									setPlayType("random")
+								}}
+								fill={playType === "random" ? "solid" : "outline"}
+							>
+								🎲
+							</IonButton>
+							<IonButton
+								onClick={() => {
+									setPlayType("enToFr")
+								}}
+								fill={playType === "enToFr" ? "solid" : "outline"}
+							>
+								{getFlagEmoteByLanguage("en")} ➡️ {getFlagEmoteByLanguage("fr")}
+							</IonButton>
+							<IonButton
+								onClick={() => {
+									setPlayType("frToEn")
+								}}
+								fill={playType === "frToEn" ? "solid" : "outline"}
+							>
+								{getFlagEmoteByLanguage("fr")} ➡️ {getFlagEmoteByLanguage("en")}
+							</IonButton>
+						</div>
+					</div>
+					<div className="flex flex-col gap-y-2">
+						<p className="flex justify-center text-lg items-center gap-x-2">
+							Son automatique <IonIcon icon={volumeMedium} />
+						</p>
+						<div className="grid grid-cols-4 gap-x-2">
 							<IonButton
 								className="w-full"
 								fill={autoSoundEnabled === "none" ? "solid" : "outline"}
@@ -37,7 +77,7 @@ const Settings = () => {
 									setAutoSoundEnabled("none")
 								}}
 							>
-								Aucune
+								🚫
 							</IonButton>
 							<IonButton
 								className="w-full"
@@ -46,7 +86,7 @@ const Settings = () => {
 									setAutoSoundEnabled("both")
 								}}
 							>
-								Les Deux
+								{getFlagEmoteByLanguage("en")} {getFlagEmoteByLanguage("fr")}
 							</IonButton>
 							<IonButton
 								className="w-full"
@@ -55,7 +95,7 @@ const Settings = () => {
 									setAutoSoundEnabled("en")
 								}}
 							>
-								English
+								{getFlagEmoteByLanguage("en")}
 							</IonButton>
 							<IonButton
 								className="w-full"
@@ -64,9 +104,10 @@ const Settings = () => {
 									setAutoSoundEnabled("fr")
 								}}
 							>
-								Français
+								{getFlagEmoteByLanguage("fr")}
 							</IonButton>
 						</div>
+						I
 					</div>
 					<IonButton onClick={onClickDisconnect}>Deconnexion</IonButton>
 				</div>

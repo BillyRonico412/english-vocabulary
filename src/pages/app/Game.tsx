@@ -1,18 +1,19 @@
 import { TextToSpeech } from "@capacitor-community/text-to-speech"
-import {
-	IonButton,
-	IonContent,
-	IonGrid,
-	IonIcon,
-	IonPage,
-	IonRow,
-} from "@ionic/react"
-import { volumeHigh } from "ionicons/icons"
+import { IonButton, IonContent, IonGrid, IonPage } from "@ionic/react"
+import { getDatabase, push, ref } from "firebase/database"
 import { useAtomValue } from "jotai"
 import { tryit } from "radash"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import enToFr from "../../../traduction/enToFr.json"
-import { autoSoundEnabledAtom } from "../../utils"
+import GamePadLang from "../../components/GamePadLang"
+import {
+	DifficultType,
+	LangType,
+	autoSoundEnabledAtom,
+	getEmoteDifficult,
+	playTypeAtom,
+	userAtom,
+} from "../../utils"
 
 const speak = async (text: string, lang: "en-US" | "fr-FR") => {
 	await tryit(TextToSpeech.speak)({
@@ -29,69 +30,78 @@ const stop = async () => {
 	await tryit(TextToSpeech.stop)()
 }
 
+const enAndFrList = Object.entries(enToFr)
+
 const Game = () => {
-	const enAndFr = Object.entries(enToFr)
-	const [langRandom, setLangRandom] = useState<0 | 1>(0)
+	const [langGame, setLangGame] = useState<LangType>("en")
 	const [isShow, setIsShow] = useState(false)
-	const [enAndFrRandom, setEnAndFrRandom] = useState(
-		enAndFr[Math.floor(Math.random() * enAndFr.length)],
-	)
+	const [indexEnAndFr, setIndexEnAndFr] = useState(0)
+	const enAndFr = useMemo(() => enAndFrList[indexEnAndFr], [indexEnAndFr])
 	const autoSoundEnabled = useAtomValue(autoSoundEnabledAtom)
+	const playType = useAtomValue(playTypeAtom)
 	const regenerate = useCallback(() => {
-		const newEnAndFr = enAndFr[Math.floor(Math.random() * enAndFr.length)]
-		const newLangRandom = Math.floor(Math.random() * 2) as 0 | 1
-		setEnAndFrRandom(newEnAndFr)
-		setLangRandom(newLangRandom)
+		const newIndexEnAndFr = Math.floor(Math.random() * enAndFrList.length)
+		const newEnAndFr = enAndFrList[newIndexEnAndFr]
+		const newLangGame = (() => {
+			switch (playType) {
+				case "enToFr":
+					return "en"
+				case "frToEn":
+					return "fr"
+				case "random": {
+					const langIndexRandom = Math.floor(Math.random() * 2) as 0 | 1
+					return langIndexRandom === 0 ? "en" : "fr"
+				}
+			}
+		})()
+		setIndexEnAndFr(newIndexEnAndFr)
+		setLangGame(newLangGame)
 		setIsShow(false)
 		if (
 			(autoSoundEnabled === "both" || autoSoundEnabled === "en") &&
-			newLangRandom === 0
+			newLangGame === "en"
 		) {
 			speak(newEnAndFr[0], "en-US")
 		} else if (
 			(autoSoundEnabled === "both" || autoSoundEnabled === "fr") &&
-			newLangRandom === 1
+			newLangGame === "fr"
 		) {
 			speak(newEnAndFr[1], "fr-FR")
 		}
-	}, [enAndFr, autoSoundEnabled])
+	}, [autoSoundEnabled, playType])
+	const user = useAtomValue(userAtom)
+	const onClickNext = useCallback(
+		(type: DifficultType) => {
+			if (!user) {
+				return
+			}
+			const db = getDatabase()
+			push(ref(db, `${user.uid}/${type}`), indexEnAndFr)
+			regenerate()
+		},
+		[regenerate, indexEnAndFr, user],
+	)
 	return (
 		<IonPage>
 			<IonContent fullscreen>
 				<div className="flex flex-col w-full h-full px-4 py-8 gap-y-4">
 					<IonGrid className="grid grid-rows-2 w-full flex-grow gap-y-4">
-						<IonRow class="flex flex-col justify-center items-center font-medium text-2xl bg-gray-600 bg-opacity-10 relative">
-							{isShow || langRandom === 0 ? enAndFrRandom[0] : "******"}
-							<div className="absolute w-full bottom-2 px-2 flex items-center">
-								<p>🇺🇸</p>
-								<IonButton
-									className="ml-auto"
-									disabled={!(isShow || langRandom === 0)}
-									onClick={() => {
-										stop()
-										speak(enAndFrRandom[0], "en-US")
-									}}
-								>
-									<IonIcon icon={volumeHigh} />
-								</IonButton>
-							</div>
-						</IonRow>
-						<IonRow class="flex flex-col justify-center items-center font-medium text-2xl bg-gray-600 bg-opacity-10 relative">
-							{isShow || langRandom === 1 ? enAndFrRandom[1] : "******"}
-							<div className="absolute w-full bottom-2 px-2 flex items-center">
-								<p>🇲🇫</p>
-								<IonButton
-									className="ml-auto"
-									disabled={!(isShow || langRandom === 1)}
-									onClick={() => {
-										stop()
-										speak(enAndFrRandom[1], "fr-FR")
-									}}
-								>
-									<IonIcon icon={volumeHigh} />
-								</IonButton>
-							</div>
-						</IonRow>
+						<GamePadLang
+							langPad={"en"}
+							isShow={isShow}
+							langGame={langGame}
+							enAndFr={enAndFr}
+							stop={stop}
+							speak={speak}
+						/>
+						<GamePadLang
+							langPad={"fr"}
+							isShow={isShow}
+							langGame={langGame}
+							enAndFr={enAndFr}
+							stop={stop}
+							speak={speak}
+						/>
 					</IonGrid>
 					{!isShow && (
 						<IonButton
@@ -99,14 +109,14 @@ const Game = () => {
 								setIsShow(true)
 								if (
 									(autoSoundEnabled === "both" || autoSoundEnabled === "en") &&
-									langRandom === 1
+									langGame === "fr"
 								) {
-									speak(enAndFrRandom[0], "en-US")
+									speak(enAndFr[0], "en-US")
 								} else if (
 									(autoSoundEnabled === "both" || autoSoundEnabled === "fr") &&
-									langRandom === 0
+									langGame === "en"
 								) {
-									speak(enAndFrRandom[1], "fr-FR")
+									speak(enAndFr[1], "fr-FR")
 								}
 							}}
 						>
@@ -114,13 +124,20 @@ const Game = () => {
 						</IonButton>
 					)}
 					{isShow && (
-						<IonButton
-							onClick={() => {
-								regenerate()
-							}}
-						>
-							Suivant
-						</IonButton>
+						<div className="flex gap-x-2">
+							{(["hard", "easy"] as const).map((difficult) => (
+								<IonButton
+									key={difficult}
+									className="w-full"
+									onClick={() => {
+										onClickNext(difficult)
+									}}
+								>
+									{getEmoteDifficult(difficult)}{" "}
+									{difficult[0].toUpperCase() + difficult.slice(1)}
+								</IonButton>
+							))}
+						</div>
 					)}
 				</div>
 			</IonContent>
